@@ -57,6 +57,7 @@ class View {
 
         convertButton.addActionListener(parentLink);
 
+        window.setLocationRelativeTo(null);
         window.setVisible(true);
     }
 
