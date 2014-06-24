@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import java.awt.TextArea;
 import java.awt.Color;
 import java.awt.BorderLayout;
@@ -42,7 +43,7 @@ class View {
         outputText.setEditable(false);
         outputText.setFocusable(false);
         outputText.setBackground(DEFAULT_BACKGROUND);
-        bottomPanel.setBackground(DEFAULT_BACKGROUND);
+        statusString.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 
         topPanel.add(inputTextLabel);
         topPanel.add(outputTextLabel);
