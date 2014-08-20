@@ -1,38 +1,122 @@
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
-public class Converter implements ActionListener {
+public class Converter extends Application {
 
     private final static String VNOTE_HEADER = "BEGIN:VNOTE";
     private final static String VNOTE_BODY = "BODY;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:";
     private final static String VNOTE_FOOTER = "END:VNOTE";
     private final static String DEFAULT_FILE_NAME = "vNote.vnt";
-    private DataBase dataBase;
-    private View view;
+    private final static double GAP = 5;
+    private final static int WINDOW_WIDTH = 1050;
+    private final static int WINDOW_HEIGHT = 550;
 
-    private Converter() {
+    private DataBase dataBase;
+    private TextArea inputText;
+    private TextArea outputText;
+    private Text statusString;
+
+    public static void main(String... args) {
+
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage stage) {
 
         //getting Singleton
         dataBase = DataBase.getSingleton();
 
-        view = new View(this);
+        //create window elements
+        inputText = new TextArea();
+        outputText = new TextArea() {
+            //setFocusable(false):
+            @Override
+            public void requestFocus() {}
+        };
+        Button convertButton = new Button("Сохранить");
+        statusString = new Text();
+        Text inputTextLabel = new Text("Текст:");
+        Text outputTextLabel = new Text("vNote.vnt:");
+
+        //setting properties for essential window elements
+        inputText.setWrapText(true);
+        outputText.setWrapText(true);
+        outputText.setEditable(false);
+
+        //layouts
+        BorderPane border = new BorderPane();
+        GridPane grid = new GridPane();
+        AnchorPane anchor = new AnchorPane();
+
+        //grid pane
+        grid.addRow(0, inputTextLabel, outputTextLabel);
+        grid.addRow(1, inputText, outputText);
+        //allow grid pane to grows to all available space when resize
+        //set same width to both columns
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setPercentWidth(50);  //column get 50% of width
+        grid.getColumnConstraints().addAll(columnConstraints, columnConstraints); //each column get 50% of width
+        //set no grows to labels row and full grows to text area's row
+        ArrayList<RowConstraints> rowConstraints = new ArrayList<>();
+        rowConstraints.add(new RowConstraints());
+        rowConstraints.add(new RowConstraints());
+        rowConstraints.get(0).setVgrow(Priority.NEVER);
+        rowConstraints.get(1).setVgrow(Priority.ALWAYS);
+        grid.getRowConstraints().addAll(rowConstraints);
+        //set padding and spacing
+        grid.setPadding(new Insets(GAP));
+        grid.setHgap(GAP);
+
+        //anchor pane
+        anchor.getChildren().addAll(statusString, convertButton);
+        AnchorPane.setLeftAnchor(statusString, GAP);    //with padding
+        AnchorPane.setBottomAnchor(statusString, GAP);
+        AnchorPane.setRightAnchor(convertButton, GAP);
+        AnchorPane.setBottomAnchor(convertButton, GAP);
+
+        //border pane
+        border.setCenter(grid);
+        border.setBottom(anchor);
+
+        //stage
+        stage.setScene(new Scene(border));
+        stage.setWidth(WINDOW_WIDTH);
+        stage.setHeight(WINDOW_HEIGHT);
+        stage.setMinWidth(WINDOW_WIDTH / 2);
+        stage.setMinHeight(WINDOW_HEIGHT / 2);
+        stage.setTitle("Создание заметок vNote.vnt");
+        stage.show();
+
+        //button click handler
+        convertButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                convert();
+            }
+        });
     }
 
-    public static void main(String[] args) {
-
-        new Converter();
-    }
-
-    public void actionPerformed(ActionEvent evnt) {
+    private void convert() {
 
         File outputFile = new File(DEFAULT_FILE_NAME);
         try (BufferedWriter outputBuffer = new BufferedWriter(new FileWriter(outputFile))) {
 
-            String sourceText = view.getInputText();
+            String sourceText = getInputText();
             String convertedText;
 
             //writing HEADER
@@ -52,10 +136,25 @@ public class Converter implements ActionListener {
             convertedText += System.lineSeparator();
 
             outputBuffer.write(convertedText);
-            view.setOutputText(convertedText);
-            view.setStatusString(outputFile.getAbsolutePath());
+            setOutputText(convertedText);
+            setStatusString(outputFile.getAbsolutePath());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private String getInputText() {
+
+        return inputText.getText();
+    }
+
+    private void setOutputText(String newText) {
+
+        outputText.setText(newText);
+    }
+
+    private void setStatusString(String newText) {
+
+        statusString.setText(newText);
     }
 }
