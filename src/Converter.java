@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -24,6 +25,7 @@ public class Converter extends Application {
     private final static double GAP = 5;
     private final static int WINDOW_WIDTH = 1050;
     private final static int WINDOW_HEIGHT = 550;
+    private final static String ICON = "styles/icon.png";
 
     private DataBase dataBase;
     private TextArea inputText;
@@ -100,6 +102,7 @@ public class Converter extends Application {
         stage.setMinWidth(WINDOW_WIDTH / 2);
         stage.setMinHeight(WINDOW_HEIGHT / 2);
         stage.setTitle("Создание заметок vNote.vnt");
+        stage.getIcons().add(new Image(this.getClass().getResource(ICON).toExternalForm()));
         stage.show();
 
         //button click handler
@@ -116,7 +119,7 @@ public class Converter extends Application {
         File outputFile = new File(DEFAULT_FILE_NAME);
         try (BufferedWriter outputBuffer = new BufferedWriter(new FileWriter(outputFile))) {
 
-            String sourceText = getInputText();
+            String sourceText = inputText.getText();
             String convertedText;
 
             //writing HEADER
@@ -136,25 +139,10 @@ public class Converter extends Application {
             convertedText += System.lineSeparator();
 
             outputBuffer.write(convertedText);
-            setOutputText(convertedText);
-            setStatusString(outputFile.getAbsolutePath());
+            outputText.setText(convertedText);
+            statusString.setText(outputFile.getAbsolutePath());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-    }
-
-    private String getInputText() {
-
-        return inputText.getText();
-    }
-
-    private void setOutputText(String newText) {
-
-        outputText.setText(newText);
-    }
-
-    private void setStatusString(String newText) {
-
-        statusString.setText(newText);
     }
 }
