@@ -1,0 +1,32 @@
+.root {
+    -fx-background: #9999ff;
+}
+
+.grid {
+    -fx-padding: 5;
+    -fx-hgap: 5;
+}
+
+.anchor {
+    -fx-padding: 0 5 5 5;
+}
+
+/*
+For properly work of TextArea -fx-background-color it is
+necessary to change TextArea's child nodes (TextArea, ScrollPane,
+ViewPort, Content) backgrounds to transparent
+*/
+.text-area .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+.text-area .scroll-pane .content {
+    -fx-background-color: transparent;
+}
+
+#output-text {
+    -fx-background-color: #aaaaaa;
+}
+
+#save-btn {
+    -fx-graphic: "styles/save_btn.png";
+}

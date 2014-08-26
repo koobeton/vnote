@@ -1,12 +1,10 @@
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -23,11 +21,11 @@ public class Converter extends Application {
     private final static String VNOTE_BODY = "BODY;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:";
     private final static String VNOTE_FOOTER = "END:VNOTE";
     private final static String DEFAULT_FILE_NAME = "vNote.vnt";
-    private final static double GAP = 5;
+    private final static double GAP_ANCHOR = 0;
     private final static int WINDOW_WIDTH = 1050;
     private final static int WINDOW_HEIGHT = 550;
     private final static String APP_ICON = "styles/app_icon.png";
-    private final static String CONV_BTN_ICON = "styles/save_btn.png";
+    private final static String CSS = "styles/styles.css";
 
     private DataBase dataBase;
     private TextArea inputText;
@@ -61,7 +59,6 @@ public class Converter extends Application {
         inputText.setWrapText(true);
         outputText.setWrapText(true);
         outputText.setEditable(false);
-        convertButton.setGraphic(new ImageView(new Image(getClass().getResource(CONV_BTN_ICON).toExternalForm())));
 
         //layouts
         BorderPane border = new BorderPane();
@@ -83,23 +80,28 @@ public class Converter extends Application {
         rowConstraints.get(0).setVgrow(Priority.NEVER);
         rowConstraints.get(1).setVgrow(Priority.ALWAYS);
         grid.getRowConstraints().addAll(rowConstraints);
-        //set padding and spacing
-        grid.setPadding(new Insets(GAP));
-        grid.setHgap(GAP);
 
         //anchor pane
         anchor.getChildren().addAll(statusString, convertButton);
-        AnchorPane.setLeftAnchor(statusString, GAP);    //with padding
-        AnchorPane.setBottomAnchor(statusString, GAP);
-        AnchorPane.setRightAnchor(convertButton, GAP);
-        AnchorPane.setBottomAnchor(convertButton, GAP);
+        AnchorPane.setLeftAnchor(statusString, GAP_ANCHOR);    //padding set in CSS
+        AnchorPane.setBottomAnchor(statusString, GAP_ANCHOR);
+        AnchorPane.setRightAnchor(convertButton, GAP_ANCHOR);
+        AnchorPane.setBottomAnchor(convertButton, GAP_ANCHOR);
 
         //border pane
         border.setCenter(grid);
         border.setBottom(anchor);
 
+        //scene and CSS
+        Scene scene = new Scene(border);
+        scene.getStylesheets().add(CSS);
+        grid.getStyleClass().add("grid");
+        anchor.getStyleClass().add("anchor");
+        outputText.setId("output-text");
+        convertButton.setId("save-btn");
+
         //stage
-        stage.setScene(new Scene(border));
+        stage.setScene(scene);
         stage.setWidth(WINDOW_WIDTH);
         stage.setHeight(WINDOW_HEIGHT);
         stage.setMinWidth(WINDOW_WIDTH / 2);
