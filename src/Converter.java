@@ -3,10 +3,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -30,7 +31,7 @@ public class Converter extends Application {
     private DataBase dataBase;
     private TextArea inputText;
     private TextArea outputText;
-    private Text statusString;
+    private Hyperlink statusString;
 
     public static void main(String... args) {
 
@@ -44,6 +45,8 @@ public class Converter extends Application {
         dataBase = DataBase.getSingleton();
 
         //create window elements
+        Label inputTextLabel = new Label("Текст:");
+        Label outputTextLabel = new Label("vNote.vnt:");
         inputText = new TextArea();
         outputText = new TextArea() {
             //setFocusable(false):
@@ -51,9 +54,7 @@ public class Converter extends Application {
             public void requestFocus() {}
         };
         Button convertButton = new Button("Сохранить");
-        statusString = new Text();
-        Text inputTextLabel = new Text("Текст:");
-        Text outputTextLabel = new Text("vNote.vnt:");
+        statusString = new Hyperlink();
 
         //setting properties for essential window elements
         inputText.setWrapText(true);
@@ -98,6 +99,8 @@ public class Converter extends Application {
         border.getStyleClass().add("border");
         grid.getStyleClass().add("grid");
         anchor.getStyleClass().add("anchor");
+        inputTextLabel.setId("input-text-label");
+        outputTextLabel.setId("output-text-label");
         outputText.setId("output-text");
         convertButton.setId("save-btn");
 

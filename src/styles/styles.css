@@ -11,6 +11,19 @@
     -fx-padding: 0 5 5 5;
 }
 
+.label {
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, white, 30, 0.5, 0, 0);
+}
+
+#input-text-label {
+    -fx-graphic: "styles/input_text_label.png";
+}
+
+#output-text-label {
+    -fx-graphic: "styles/output_text_label.png";
+}
+
 /*
 For properly work of TextArea -fx-background-color it is
 necessary to change TextArea's child nodes (TextArea, ScrollPane,
@@ -22,7 +35,7 @@ ViewPort, Content) backgrounds to transparent
 .text-area .scroll-pane .content {
     -fx-background-color: transparent;
 }
-
+/* TextArea: */
 #output-text {
     -fx-background-color: #aaaaaa;
 }
@@ -31,9 +44,21 @@ ViewPort, Content) backgrounds to transparent
     -fx-graphic: "styles/save_btn.png";
     -fx-text-fill: yellow;
     -fx-font-weight: bold;
+	-fx-background-radius: 20;
     -fx-background-color: linear-gradient(#1a971a, #000000);
 }
 
 #save-btn:hover {
     -fx-background-color: linear-gradient(#000000, #1a971a);
+    -fx-effect: dropshadow(three-pass-box, yellow, 15, 0, 0, 0);
 }
+
+.hyperlink {
+    -fx-text-fill: white;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: black;
+    -fx-effect: dropshadow(gaussian, white, 30, 0.8, 0, 0);
+}
+
