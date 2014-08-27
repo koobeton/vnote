@@ -1,5 +1,5 @@
-.root {
-    -fx-background: #9999ff;
+.border {
+    -fx-background-color: radial-gradient(radius 100%, #9999ff, #693086);
 }
 
 .grid {
@@ -29,4 +29,11 @@ ViewPort, Content) backgrounds to transparent
 
 #save-btn {
     -fx-graphic: "styles/save_btn.png";
+    -fx-text-fill: yellow;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#1a971a, #000000);
+}
+
+#save-btn:hover {
+    -fx-background-color: linear-gradient(#000000, #1a971a);
 }

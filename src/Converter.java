@@ -95,6 +95,7 @@ public class Converter extends Application {
         //scene and CSS
         Scene scene = new Scene(border);
         scene.getStylesheets().add(CSS);
+        border.getStyleClass().add("border");
         grid.getStyleClass().add("grid");
         anchor.getStyleClass().add("anchor");
         outputText.setId("output-text");
