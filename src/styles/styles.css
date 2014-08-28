@@ -53,12 +53,21 @@ ViewPort, Content) backgrounds to transparent
     -fx-effect: dropshadow(three-pass-box, yellow, 15, 0, 0, 0);
 }
 
-.hyperlink {
+#hyperlink-normal {
     -fx-text-fill: white;
 }
 
-.hyperlink:hover {
+#hyperlink-normal:hover {
     -fx-text-fill: black;
     -fx-effect: dropshadow(gaussian, white, 30, 0.8, 0, 0);
 }
 
+#hyperlink-warning {
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, red, 30, 0.8, 0, 0);
+}
+
+#hyperlink-warning:hover {
+    -fx-text-fill: black;
+    -fx-effect: dropshadow(gaussian, white, 30, 0.8, 0, 0);
+}

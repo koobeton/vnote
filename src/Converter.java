@@ -8,12 +8,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class Converter extends Application {
@@ -32,6 +30,7 @@ public class Converter extends Application {
     private TextArea inputText;
     private TextArea outputText;
     private Hyperlink statusString;
+    private File outputFile = null;
 
     public static void main(String... args) {
 
@@ -39,7 +38,7 @@ public class Converter extends Application {
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(final Stage stage) {
 
         //getting Singleton
         dataBase = DataBase.getSingleton();
@@ -121,11 +120,28 @@ public class Converter extends Application {
                 convert();
             }
         });
+
+        //hyperlink click handler
+        statusString.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //check the output file exists
+                if (outputFile != null) {
+                    //getting parent directory name as a File object
+                    File outputFileDirectory = new File(
+                            outputFile.getAbsolutePath().replaceAll(outputFile.getPath() + "$", "")); //$ - EOL regexp
+                    //check this File object is a directory
+                    if (outputFileDirectory.isDirectory()) {
+                        openDirectory(outputFileDirectory, stage);
+                    }
+                }
+            }
+        });
     }
 
     private void convert() {
 
-        File outputFile = new File(DEFAULT_FILE_NAME);
+        outputFile = new File(DEFAULT_FILE_NAME);
         try (BufferedWriter outputBuffer = new BufferedWriter(new FileWriter(outputFile))) {
 
             String sourceText = inputText.getText();
@@ -149,9 +165,30 @@ public class Converter extends Application {
 
             outputBuffer.write(convertedText);
             outputText.setText(convertedText);
+            statusString.setId("hyperlink-normal");
             statusString.setText(outputFile.getAbsolutePath());
+        } catch (FileNotFoundException ex) {
+            //check if file name match the directory name
+            if (outputFile.isDirectory()) {
+                String wrongName = outputFile.getPath();
+                statusString.setId("hyperlink-warning");
+                statusString.setText("ОШИБКА: Невозможно создать файл " + wrongName + ".\n" +
+                        "Текущая папка содержит вложенную папку с таким именем.\n " +
+                        "Для продолжения работы переименуйте папку " + wrongName + ".");
+            } else ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void openDirectory(File directory, Stage ownerWindow) {
+
+        FileChooser explorer = new FileChooser();
+        explorer.setTitle("Менеджер файлов vNote.vnt");
+        explorer.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("vNote файлы", "*.vnt"),
+                new FileChooser.ExtensionFilter("Все файлы", "*.*"));
+        explorer.setInitialDirectory(directory);
+        explorer.showOpenDialog(ownerWindow);
     }
 }
