@@ -184,9 +184,9 @@ public class Converter extends Application {
     private void openDirectory(File directory, Stage ownerWindow) {
 
         FileChooser explorer = new FileChooser();
-        explorer.setTitle("Ìוםוהזונ פאיכמג vNote.vnt");
+        explorer.setTitle("Ìוםוהזונ פאיכמג vNote");
         explorer.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("vNote פאיכû", "*.vnt"),
+                new FileChooser.ExtensionFilter("Ôאיכû vNote", "*.vnt"),
                 new FileChooser.ExtensionFilter("Âסו פאיכû", "*.*"));
         explorer.setInitialDirectory(directory);
         explorer.showOpenDialog(ownerWindow);
