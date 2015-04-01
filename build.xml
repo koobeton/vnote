@@ -1,0 +1,31 @@
+<project name="vNote" default="all">
+
+    <property file="ant.properties"/>
+
+    <target name="make_dir">
+        <mkdir dir="${build_dir}"/>
+    </target>
+
+    <target name="compile" depends="make_dir">
+        <javac destdir="${build_dir}">
+            <src path="${src_dir}"/>
+            <include name="${entry_point}.java"/>
+        </javac>
+    </target>
+
+    <target name="copy_resources" depends="compile">
+        <copy todir="${build_dir}/${resource_dir}">
+            <fileset dir="${src_dir}/${resource_dir}"/>
+        </copy>
+    </target>
+
+    <target name="make_jar" depends="copy_resources">
+        <jar destfile="${jar_name}" basedir="${build_dir}" manifest="${manifest}"/>
+    </target>
+
+    <target name="all" description="Make distribution" depends="make_jar"/>
+
+    <target name="clean" description="Delete output folder">
+        <delete dir="${build_dir}"/>
+    </target>
+</project>
