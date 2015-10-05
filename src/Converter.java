@@ -26,7 +26,6 @@ public class Converter extends Application {
     private final static String APP_ICON = "styles/app_icon.png";
     private final static String CSS = "styles/styles.css";
 
-    private DataBase dataBase;
     private TextArea inputText;
     private TextArea outputText;
     private Hyperlink statusString;
@@ -39,9 +38,6 @@ public class Converter extends Application {
 
     @Override
     public void start(final Stage stage) {
-
-        //getting Singleton
-        dataBase = DataBase.getSingleton();
 
         //create window elements
         Label inputTextLabel = new Label("Текст:");
@@ -145,26 +141,35 @@ public class Converter extends Application {
         try (BufferedWriter outputBuffer = new BufferedWriter(new FileWriter(outputFile))) {
 
             String sourceText = inputText.getText();
-            String convertedText;
+            StringBuilder convertedText = new StringBuilder();
 
             //writing HEADER
-            convertedText = VNOTE_HEADER;
-            convertedText += System.lineSeparator();
+            convertedText.append(VNOTE_HEADER);
+            convertedText.append(System.lineSeparator());
             //writing BODY
-            convertedText += VNOTE_BODY;
-            for (int i = 0; i < sourceText.length(); i++) {
-                String symbol = String.valueOf(sourceText.charAt(i));
-                if (dataBase.containsKey(symbol)) {
-                    convertedText += dataBase.get(symbol);
+            convertedText.append(VNOTE_BODY);
+            for (char c : sourceText.toCharArray()) {
+                String symbol = String.valueOf(c);
+                byte[] bytes = symbol.getBytes("UTF-8");
+                if (symbol.equals(System.lineSeparator()) || symbol.equals("\n")) {
+                    convertedText.append("=0A");
+                } else if (symbol.equals("=")) {
+                    convertedText.append("=3D");
+                } else if (bytes.length == 1) {
+                    convertedText.append(symbol);
+                } else {
+                    for (byte b : bytes) {
+                        convertedText.append(String.format("=%02x", b).toUpperCase());
+                    }
                 }
             }
-            convertedText += System.lineSeparator();
+            convertedText.append(System.lineSeparator());
             //writing FOOTER
-            convertedText += VNOTE_FOOTER;
-            convertedText += System.lineSeparator();
+            convertedText.append(VNOTE_FOOTER);
+            convertedText.append(System.lineSeparator());
 
-            outputBuffer.write(convertedText);
-            outputText.setText(convertedText);
+            outputBuffer.write(convertedText.toString());
+            outputText.setText(convertedText.toString());
             statusString.setId("hyperlink-normal");
             statusString.setText(outputFile.getAbsolutePath());
         } catch (FileNotFoundException ex) {
